@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Able Player</title>
+    <link rel="stylesheet" href="build/ableplayer.min.css" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div id="player-section">
+      <video id="video1" data-able-player preload="metadata" poster="">
+        <track
+          id="caption-track"
+          kind="captions"
+          srclang="en"
+          label="English"
+          src=""
+        />
+        <track
+          id="caption-track-es"
+          kind="captions"
+          srclang="es"
+          label="Spanish"
+          src=""
+        />
+      </video>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@1.6.15/dist/hls.min.js"></script>
+
+    <!-- Injected at build time by scripts/gen-able-config.mjs (sets window.ABLE_ENV) -->
+    <script src="env-config.js"></script>
+
+    <!--
+      Module and defer scripts run in document order after parsing, so
+      playlist.js sets the poster and track sources before Able Player
+      initialises.
+    -->
+    <script type="module" src="js/playlist.js"></script>
+    <script defer src="build/ableplayer.min.js"></script>
+    <script type="module" src="js/main.js"></script>
+  </body>
+</html>

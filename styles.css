@@ -1,0 +1,189 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  min-height: 100%;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  min-height: 100vh;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  overflow: auto;
+}
+
+#player-section {
+  width: 50%;
+  height: 50vh;
+  flex: none;
+  display: flex;
+  flex-direction: column;
+}
+
+/* .able-wrapper and .able-controller are direct children of #player-section */
+.able-wrapper {
+  flex: 1 !important;
+  min-height: 0 !important;
+  overflow: visible !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  position: relative !important;
+}
+
+/* Pass height constraint down through AblePlayer's inner divs */
+.able,
+.able-media-container,
+.able-vidcap-container {
+  height: 100% !important;
+  min-height: 0 !important;
+  overflow: hidden !important;
+}
+
+.able-wrapper video {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: fill !important;
+}
+
+/* ── Playlist end-card overlay ───────────────────────── */
+#playlist-overlay {
+  position: absolute;
+  bottom: 56px;
+  right: 10px;
+  display: flex;
+  gap: 10px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.5s ease;
+  z-index: 200;
+}
+#playlist-overlay.visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.playlist-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+}
+
+.playlist-circle {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid rgba(255, 255, 255, 0.45);
+  background: rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(3px);
+  transition:
+    border-color 0.2s,
+    transform 0.2s;
+}
+.playlist-card:hover .playlist-circle {
+  border-color: rgba(255, 255, 255, 0.9);
+  transform: scale(1.06);
+}
+.playlist-circle img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.8;
+}
+
+.playlist-card-label {
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.8);
+  text-align: center;
+  max-width: 90px;
+  line-height: 1.3;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.9);
+}
+
+/* Buffering spinner, shown while a seek or stall is loading data */
+#buffer-spinner {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 48px;
+  height: 48px;
+  margin: -24px 0 0 -24px;
+  border: 4px solid rgba(255, 255, 255, 0.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: buffer-spin 0.8s linear infinite;
+  display: none;
+  pointer-events: none;
+  z-index: 150;
+}
+#buffer-spinner.visible {
+  display: block;
+}
+@keyframes buffer-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Transcript language popup — anchored above the button */
+.able-button-handler-view-transcript {
+  position: relative;
+}
+.able-popup-transcript {
+  position: absolute !important;
+  bottom: 100% !important;
+  right: 0 !important;
+  left: auto !important;
+  top: auto !important;
+  margin-bottom: 6px;
+  min-width: 140px;
+}
+.able-popup-transcript-heading {
+  padding: 7px 14px 5px;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--able-medium-gray, #666);
+  cursor: default;
+  user-select: none;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  margin-bottom: 3px;
+  pointer-events: none;
+}
+
+/* Highlight playlist prev/next buttons in the control bar */
+.able-button-handler-prev-item,
+.able-button-handler-next-item {
+  color: #f5c400 !important;
+}
+.able-button-handler-prev-item svg path,
+.able-button-handler-next-item svg path {
+  fill: #f5c400 !important;
+}
+.able-button-handler-prev-item:hover,
+.able-button-handler-next-item:hover {
+  color: #fff !important;
+}
+.able-button-handler-prev-item:hover svg path,
+.able-button-handler-next-item:hover svg path {
+  fill: #fff !important;
+}
+
+.able-player.fade-out {
+  opacity: 1 !important;
+  visibility: visible !important;
+  transition: none !important;
+}
