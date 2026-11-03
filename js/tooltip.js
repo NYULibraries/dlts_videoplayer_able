@@ -9,8 +9,6 @@ function hideNow() {
   tooltip.style.display = "none";
 }
 
-// Able Player swaps its tooltip as soon as another button is entered;
-// do the same when the pointer or focus reaches any other control.
 function hideForOtherButton(e) {
   const btn = e.target.closest('[role="button"]');
   if (btn && btn !== owner) hideNow();

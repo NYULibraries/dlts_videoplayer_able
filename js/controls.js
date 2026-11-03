@@ -1,10 +1,5 @@
-import { PLAYLIST, currentIndex, navigateTo } from "./playlist.js";
 import { openTranscriptTab } from "./transcript.js";
 import { showTooltip, hideTooltip } from "./tooltip.js";
-
-// ── Inject buttons into Able Player's right controls ───────────────────
-// Able Player buttons are div[role="button"] + class "able-button-handler-{name}".
-// Matching this format means they inherit all existing button CSS automatically.
 
 const svgNS = "http://www.w3.org/2000/svg";
 
@@ -47,7 +42,7 @@ function makePipe() {
   return p;
 }
 
-export function addControlButtons() {
+export function addControlButtons({ playlist, index, onNavigate, player }) {
   const target =
     document.querySelector(".able-right-controls") ||
     document.querySelector(".able-controller");
@@ -55,44 +50,39 @@ export function addControlButtons() {
 
   target.appendChild(makePipe());
 
-  if (currentIndex > 0) {
+  if (index > 0) {
     target.appendChild(
       makeControlBtn(
         "prev-item",
         "Previous video",
         "0 0 20 20",
         "M5 17.5v-15h2.5v6.875l6.25-6.25v13.75l-6.25-6.25v6.875z",
-        () => navigateTo(currentIndex - 1),
+        () => onNavigate(index - 1),
       ),
     );
   }
 
-  if (currentIndex < PLAYLIST.length - 1) {
+  if (index < playlist.length - 1) {
     target.appendChild(
       makeControlBtn(
         "next-item",
         "Next video",
         "0 0 20 20",
         "M15 2.5v15h-2.5v-6.875l-6.25 6.25v-13.75l6.25 6.25v-6.875z",
-        () => navigateTo(currentIndex + 1),
+        () => onNavigate(index + 1),
       ),
     );
   }
 
-  // Transcript button with language popup
-  const player = AblePlayerInstances[0];
   const captionTracks = (player.captions || []).filter(
     (t) => t.cues && t.cues.length,
   );
 
-  // Build the popup menu using Able Player's .able-popup class so it
-  // inherits all existing popup styling automatically.
   const transcriptMenu = document.createElement("ul");
   transcriptMenu.className = "able-popup able-popup-transcript";
   transcriptMenu.setAttribute("role", "menu");
   transcriptMenu.style.display = "none";
 
-  // Heading — role="presentation" keeps it out of the menu item sequence
   const heading = document.createElement("li");
   heading.setAttribute("role", "presentation");
   heading.className = "able-popup-transcript-heading";
@@ -138,14 +128,12 @@ export function addControlButtons() {
   );
   transcriptBtn.setAttribute("aria-haspopup", "menu");
   transcriptBtn.setAttribute("aria-expanded", "false");
-  // Menu sits inside the button div; position relative keeps it anchored.
   transcriptBtn.style.position = "relative";
   transcriptBtn.appendChild(transcriptMenu);
 
   target.appendChild(makePipe());
   target.appendChild(transcriptBtn);
 
-  // Close menu when clicking anywhere outside the button
   document.addEventListener("click", (e) => {
     if (!transcriptBtn.contains(e.target)) {
       transcriptMenu.style.display = "none";

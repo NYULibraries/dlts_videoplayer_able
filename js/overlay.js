@@ -1,20 +1,16 @@
-import { PLAYLIST, currentIndex, navigateTo } from "./playlist.js";
-
-// ── Playlist end-card overlay ──────────────────────────────────────────
-
-export function buildPlaylistOverlay() {
+export function buildPlaylistOverlay({ playlist, index, onNavigate }) {
   const wrapper = document.querySelector(".able-wrapper");
   if (!wrapper) return;
 
   const overlay = document.createElement("div");
   overlay.id = "playlist-overlay";
 
-  PLAYLIST.forEach((item, idx) => {
-    if (idx <= currentIndex) return;
+  playlist.forEach((item, idx) => {
+    if (idx <= index) return;
 
     const card = document.createElement("div");
     card.className = "playlist-card";
-    card.addEventListener("click", () => navigateTo(idx));
+    card.addEventListener("click", () => onNavigate(idx));
 
     const circle = document.createElement("div");
     circle.className = "playlist-circle";

@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>DLTS Able Player test harness</title>
+    <link rel="stylesheet" href="../build/ableplayer.min.css" />
+    <link rel="stylesheet" href="../styles.css" />
+  </head>
+  <body>
+    <div id="player-section">
+      <video id="video1" preload="metadata">
+        <track kind="captions" srclang="en" label="English" src="" />
+      </video>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@1.6.15/dist/hls.min.js"></script>
+    <script src="../build/ableplayer.min.js"></script>
+    <script type="module">
+      import { mountDltsPlayer } from "../js/dlts-player.js";
+
+      // Public HLS with CORS so Chromium/hls.js can play in CI.
+      mountDltsPlayer({
+        video: document.getElementById("video1"),
+        playlist: [
+          {
+            title: "Sintel",
+            hlsSrc: "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+            poster: "",
+          },
+        ],
+        index: 0,
+      });
+    </script>
+  </body>
+</html>

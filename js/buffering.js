@@ -5,7 +5,9 @@ export function initBuffering(video, player) {
   const spinner = document.createElement("div");
   spinner.id = "buffer-spinner";
   spinner.setAttribute("aria-hidden", "true");
-  document.querySelector(".able-wrapper").appendChild(spinner);
+  const wrapper =
+    video.closest(".able-wrapper") || document.querySelector(".able-wrapper");
+  if (wrapper) wrapper.appendChild(spinner);
   const setBuffering = (on) => spinner.classList.toggle("visible", on);
 
   video.addEventListener("seeking", () => {

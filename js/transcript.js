@@ -1,10 +1,7 @@
-// ── Helpers ────────────────────────────────────────────────────────────
-
 function pad2(n) {
   return String(Math.floor(n)).padStart(2, "0");
 }
 
-// Flatten Able Player's WebVTT component tree → plain text
 function flattenComponent(c) {
   if (!c) return "";
   if (c.type === "string") return c.value || "";
@@ -13,9 +10,6 @@ function flattenComponent(c) {
 function cueToText(cue) {
   return flattenComponent(cue.components).trim();
 }
-
-// ── Transcript tab ─────────────────────────────────────────────────────
-// Groups cues by speaker, merges continuation cues, opens as plain text.
 
 function formatTimeTxt(secs) {
   const h = Math.floor(secs / 3600);
