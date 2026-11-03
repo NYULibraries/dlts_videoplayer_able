@@ -164,24 +164,6 @@ body {
   pointer-events: none;
 }
 
-/* Highlight playlist prev/next buttons in the control bar */
-.able-button-handler-prev-item,
-.able-button-handler-next-item {
-  color: #f5c400 !important;
-}
-.able-button-handler-prev-item svg path,
-.able-button-handler-next-item svg path {
-  fill: #f5c400 !important;
-}
-.able-button-handler-prev-item:hover,
-.able-button-handler-next-item:hover {
-  color: #fff !important;
-}
-.able-button-handler-prev-item:hover svg path,
-.able-button-handler-next-item:hover svg path {
-  fill: #fff !important;
-}
-
 .able-player.fade-out {
   opacity: 1 !important;
   visibility: visible !important;

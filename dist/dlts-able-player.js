@@ -134,27 +134,20 @@ function addControlButtons({ playlist, index, onNavigate, player }) {
   const target = document.querySelector(".able-right-controls") || document.querySelector(".able-controller");
   if (!target) return;
   target.appendChild(makePipe());
-  if (index > 0) {
-    target.appendChild(
-      makeControlBtn(
-        "prev-item",
-        "Previous video",
-        "0 0 20 20",
-        "M5 17.5v-15h2.5v6.875l6.25-6.25v13.75l-6.25-6.25v6.875z",
-        () => onNavigate(index - 1)
-      )
-    );
-  }
-  if (index < playlist.length - 1) {
-    target.appendChild(
-      makeControlBtn(
-        "next-item",
-        "Next video",
-        "0 0 20 20",
-        "M15 2.5v15h-2.5v-6.875l-6.25 6.25v-13.75l6.25 6.25v-6.875z",
-        () => onNavigate(index + 1)
-      )
-    );
+  const navButtons = [
+    ["prev-item", "Previous video", "M5 17.5v-15h2.5v6.875l6.25-6.25v13.75l-6.25-6.25v6.875z", index - 1],
+    ["next-item", "Next video", "M15 2.5v15h-2.5v-6.875l-6.25 6.25v-13.75l6.25 6.25v-6.875z", index + 1]
+  ];
+  for (const [name, label, pathD, to] of navButtons) {
+    const enabled = to >= 0 && to < playlist.length;
+    const btn = makeControlBtn(name, label, "0 0 20 20", pathD, () => {
+      if (enabled) onNavigate(to);
+    });
+    if (!enabled) {
+      btn.classList.add("buttonOff");
+      btn.setAttribute("aria-disabled", "true");
+    }
+    target.appendChild(btn);
   }
   const captionTracks = (player.captions || []).filter(
     (t) => t.cues && t.cues.length
