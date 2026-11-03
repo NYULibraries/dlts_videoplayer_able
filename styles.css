@@ -141,7 +141,7 @@ body {
    toolbar once "View in new tab" is added. min-width beats Able's inline
    width (and any saved smaller width) without !important. */
 .able-transcript-area {
-  min-width: min(600px, 100vw);
+  min-width: min(500px, 100vw);
 }
 
 /* Keep the drag icon beside the gear. The handle stays full width so the
