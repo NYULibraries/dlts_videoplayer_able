@@ -137,31 +137,46 @@ body {
   }
 }
 
-/* Transcript language popup — anchored above the button */
-.able-button-handler-view-transcript {
-  position: relative;
+/* Able Player defaults the transcript window to 450px, which crowds the
+   toolbar once "View in new tab" is added. min-width beats Able's inline
+   width (and any saved smaller width) without !important. */
+.able-transcript-area {
+  min-width: min(600px, 100vw);
 }
-.able-popup-transcript {
-  position: absolute !important;
-  bottom: 100% !important;
-  right: 0 !important;
-  left: auto !important;
-  top: auto !important;
-  margin-bottom: 6px;
-  min-width: 140px;
+
+/* Keep the drag icon beside the gear. The handle stays full width so the
+   drag target does not shrink; only Able's centering of the icon is undone. */
+.able-window-toolbar .able-drag-handle svg {
+  margin: 0;
 }
-.able-popup-transcript-heading {
-  padding: 7px 14px 5px;
-  font-size: 10px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: var(--able-medium-gray, #666);
-  cursor: default;
-  user-select: none;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  margin-bottom: 3px;
-  pointer-events: none;
+
+/* "View in new tab" link in the transcript window toolbar */
+.able-window-toolbar .able-transcript-newtab {
+  order: 3;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  font-size: 0.875rem;
+  color: var(--able-control-label-color);
+  text-decoration: underline;
+  white-space: nowrap;
+  cursor: pointer;
+  outline: 3px solid transparent;
+}
+.able-window-toolbar .able-transcript-newtab:hover {
+  outline-color: var(--able-hover-outline);
+}
+.able-window-toolbar .able-transcript-newtab:focus {
+  outline-color: var(--able-focus-outline);
+}
+.able-transcript-newtab svg {
+  width: 1em;
+  height: 1em;
+  fill: currentColor;
 }
 
 .able-player.fade-out {

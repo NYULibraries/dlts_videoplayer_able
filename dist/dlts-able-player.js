@@ -1,82 +1,47 @@
-// js/transcript.js
-function e(e) {
-	return String(Math.floor(e)).padStart(2, "0");
-}
-function t(e) {
-	return e ? e.type === "string" ? e.value || "" : (e.children || []).map(t).join("") : "";
-}
-function n(e) {
-	return t(e.components).trim();
-}
-function r(t) {
-	let n = Math.floor(t / 3600), r = Math.floor(t % 3600 / 60), i = (t % 60).toFixed(3).padStart(6, "0");
-	return `${e(n)}:${e(r)}:${i}`;
+// js/tooltip.js
+var e, t, n;
+function r() {
+	clearTimeout(t), e.style.display = "none";
 }
 function i(e) {
-	let t = [], i = null;
-	return e.forEach((e) => {
-		let r = n(e).replace(/\n\s*/g, " ").trim();
-		if (!r) return;
-		let a = r.match(/^(Speaker \d+):\s*/);
-		a ? (i = {
-			speaker: a[1],
-			time: e.start,
-			text: r.slice(a[0].length)
-		}, t.push(i)) : i ? i.text += (i.text ? " " : "") + r : (i = {
-			speaker: null,
-			time: e.start,
-			text: r
-		}, t.push(i));
-	}), t.filter((e) => e.text).map((e) => (e.speaker ? `${e.speaker} ` : "") + r(e.time) + "\n" + e.text).join("\n\n") + "\n";
-}
-function a(e) {
-	let t = new Blob([i(e)], { type: "text/plain" });
-	window.open(URL.createObjectURL(t), "_blank");
-}
-// js/tooltip.js
-var o, s, c;
-function l() {
-	clearTimeout(s), o.style.display = "none";
-}
-function u(e) {
 	let t = e.target.closest("[role=\"button\"]");
-	t && t !== c && l();
+	t && t !== n && r();
 }
-function d(e) {
-	if (e.getAttribute("aria-expanded") === "true") return;
-	let t = document.querySelector(".able-controller");
-	o || (o = document.createElement("div"), o.className = "able-tooltip", o.addEventListener("mouseenter", () => clearTimeout(s)), o.addEventListener("mouseleave", l), t.appendChild(o), t.addEventListener("mouseover", u), t.addEventListener("focusin", u)), c = e, clearTimeout(s), AblePlayerInstances[0].$tooltipDiv.hide(), o.textContent = e.getAttribute("aria-label"), o.style.display = "block";
-	let n = t.getBoundingClientRect(), r = e.getBoundingClientRect(), i = n.right - r.right - o.offsetWidth / 2;
-	o.style.right = (i < 0 ? 2 : i) + "px", o.style.top = $(e).position().top + $(e).height() + 5 + "px";
+function a(a) {
+	if (a.getAttribute("aria-expanded") === "true") return;
+	let o = document.querySelector(".able-controller");
+	e || (e = document.createElement("div"), e.className = "able-tooltip", e.addEventListener("mouseenter", () => clearTimeout(t)), e.addEventListener("mouseleave", r), o.appendChild(e), o.addEventListener("mouseover", i), o.addEventListener("focusin", i)), n = a, clearTimeout(t), AblePlayerInstances[0].$tooltipDiv.hide(), e.textContent = a.getAttribute("aria-label"), e.style.display = "block";
+	let s = o.getBoundingClientRect(), c = a.getBoundingClientRect(), l = s.right - c.right - e.offsetWidth / 2;
+	e.style.right = (l < 0 ? 2 : l) + "px", e.style.top = $(a).position().top + $(a).height() + 5 + "px";
 }
-function f(e) {
-	o && (clearTimeout(s), e.type === "click" ? l() : s = setTimeout(l, 500));
+function o(n) {
+	e && (clearTimeout(t), n.type === "click" ? r() : t = setTimeout(r, 500));
 }
 // js/controls.js
-var p = "http://www.w3.org/2000/svg";
-function m(e, t, n, r, i) {
-	let a = document.createElement("div");
-	a.setAttribute("role", "button"), a.setAttribute("tabindex", "0"), a.className = `able-button-handler-${e}`, a.setAttribute("aria-label", t);
-	let o = document.createElementNS(p, "svg");
-	o.setAttribute("focusable", "false"), o.setAttribute("aria-hidden", "true"), o.setAttribute("viewBox", n);
-	let s = document.createElementNS(p, "path");
-	return s.setAttribute("d", r), o.appendChild(s), a.appendChild(o), a.addEventListener("click", i), ["mouseenter", "focus"].forEach((e) => a.addEventListener(e, () => d(a))), [
+var s = "http://www.w3.org/2000/svg";
+function c(e, t, n, r, i) {
+	let c = document.createElement("div");
+	c.setAttribute("role", "button"), c.setAttribute("tabindex", "0"), c.className = `able-button-handler-${e}`, c.setAttribute("aria-label", t);
+	let l = document.createElementNS(s, "svg");
+	l.setAttribute("focusable", "false"), l.setAttribute("aria-hidden", "true"), l.setAttribute("viewBox", n);
+	let u = document.createElementNS(s, "path");
+	return u.setAttribute("d", r), l.appendChild(u), c.appendChild(l), c.addEventListener("click", i), ["mouseenter", "focus"].forEach((e) => c.addEventListener(e, () => a(c))), [
 		"mouseleave",
 		"blur",
 		"click"
-	].forEach((e) => a.addEventListener(e, f)), a.addEventListener("keydown", (e) => {
+	].forEach((e) => c.addEventListener(e, o)), c.addEventListener("keydown", (e) => {
 		(e.key === "Enter" || e.key === " ") && (e.preventDefault(), i());
-	}), a;
+	}), c;
 }
-function h() {
+function l() {
 	let e = document.createElement("div");
 	return e.className = "able-pipe", e.textContent = "|", e;
 }
-function g({ playlist: e, index: t, onNavigate: n, player: r }) {
-	let i = document.querySelector(".able-right-controls") || document.querySelector(".able-controller");
-	if (!i) return;
-	i.appendChild(h());
-	let o = [[
+function u({ playlist: e, index: t, onNavigate: n }) {
+	let r = document.querySelector(".able-right-controls") || document.querySelector(".able-controller");
+	if (!r) return;
+	r.appendChild(l());
+	let i = [[
 		"prev-item",
 		"Previous video",
 		"M5 17.5v-15h2.5v6.875l6.25-6.25v13.75l-6.25-6.25v6.875z",
@@ -87,33 +52,15 @@ function g({ playlist: e, index: t, onNavigate: n, player: r }) {
 		"M15 2.5v15h-2.5v-6.875l-6.25 6.25v-13.75l6.25 6.25v-6.875z",
 		t + 1
 	]];
-	for (let [t, r, a, s] of o) {
-		let o = s >= 0 && s < e.length, c = m(t, r, "0 0 20 20", a, () => {
-			o && n(s);
+	for (let [t, a, o, s] of i) {
+		let i = s >= 0 && s < e.length, l = c(t, a, "0 0 20 20", o, () => {
+			i && n(s);
 		});
-		o || (c.classList.add("buttonOff"), c.setAttribute("aria-disabled", "true")), i.appendChild(c);
+		i || (l.classList.add("buttonOff"), l.setAttribute("aria-disabled", "true")), r.appendChild(l);
 	}
-	let s = (r.captions || []).filter((e) => e.cues && e.cues.length), c = document.createElement("ul");
-	c.className = "able-popup able-popup-transcript", c.setAttribute("role", "menu"), c.style.display = "none";
-	let l = document.createElement("li");
-	l.setAttribute("role", "presentation"), l.className = "able-popup-transcript-heading", l.textContent = "Languages", c.appendChild(l), s.forEach((e) => {
-		let t = document.createElement("li");
-		t.setAttribute("role", "menuitem"), t.setAttribute("tabindex", "-1"), t.textContent = e.label || e.language || "Transcript", t.addEventListener("click", (t) => {
-			t.stopPropagation(), c.style.display = "none", u.setAttribute("aria-expanded", "false"), a(e.cues);
-		}), t.addEventListener("keydown", (e) => {
-			(e.key === "Enter" || e.key === " ") && (e.preventDefault(), t.click());
-		}), c.appendChild(t);
-	});
-	let u = m("view-transcript", "View transcript as plain text", "0 0 20 20", "M0 19.107v-17.857q0-0.446 0.313-0.759t0.759-0.313h8.929v6.071q0 0.446 0.313 0.759t0.759 0.313h6.071v11.786q0 0.446-0.313 0.759t-0.759 0.312h-15q-0.446 0-0.759-0.313t-0.313-0.759zM4.286 15.536q0 0.156 0.1 0.257t0.257 0.1h7.857q0.156 0 0.257-0.1t0.1-0.257v-0.714q0-0.156-0.1-0.257t-0.257-0.1h-7.857q-0.156 0-0.257 0.1t-0.1 0.257v0.714zM4.286 12.679q0 0.156 0.1 0.257t0.257 0.1h7.857q0.156 0 0.257-0.1t0.1-0.257v-0.714q0-0.156-0.1-0.257t-0.257-0.1h-7.857q-0.156 0-0.257 0.1t-0.1 0.257v0.714zM4.286 9.821q0 0.156 0.1 0.257t0.257 0.1h7.857q0.156 0 0.257-0.1t0.1-0.257v-0.714q0-0.156-0.1-0.257t-0.257-0.1h-7.857q-0.156 0-0.257 0.1t-0.1 0.257v0.714zM11.429 5.893v-5.268q0.246 0.156 0.402 0.313l4.554 4.554q0.156 0.156 0.313 0.402h-5.268z", () => {
-		let e = c.style.display !== "none";
-		c.style.display = e ? "none" : "", u.setAttribute("aria-expanded", e ? "false" : "true"), !e && c.firstChild && c.firstChild.focus();
-	});
-	u.setAttribute("aria-haspopup", "menu"), u.setAttribute("aria-expanded", "false"), u.style.position = "relative", u.appendChild(c), i.appendChild(h()), i.appendChild(u), document.addEventListener("click", (e) => {
-		u.contains(e.target) || (c.style.display = "none", u.setAttribute("aria-expanded", "false"));
-	});
 }
 // js/overlay.js
-function _({ playlist: e, index: t, onNavigate: n }) {
+function d({ playlist: e, index: t, onNavigate: n }) {
 	let r = document.querySelector(".able-wrapper");
 	if (!r) return;
 	let i = document.createElement("div");
@@ -129,15 +76,15 @@ function _({ playlist: e, index: t, onNavigate: n }) {
 		c.className = "playlist-card-label", c.textContent = e.title, a.appendChild(o), a.appendChild(c), i.appendChild(a);
 	}), i.children.length && r.appendChild(i);
 }
-var v = !1;
-function y(e, t) {
+var f = !1;
+function p(e, t) {
 	let n = document.getElementById("playlist-overlay");
 	if (!n || !(t > 0)) return;
 	let r = e >= t - 20;
-	r !== v && (n.classList.toggle("visible", r), v = r);
+	r !== f && (n.classList.toggle("visible", r), f = r);
 }
 // js/buffering.js
-function b(e, t) {
+function m(e, t) {
 	let n = document.createElement("div");
 	n.id = "buffer-spinner", n.setAttribute("aria-hidden", "true");
 	let r = e.closest(".able-wrapper") || document.querySelector(".able-wrapper");
@@ -152,7 +99,7 @@ function b(e, t) {
 	].forEach((t) => e.addEventListener(t, () => i(!1)));
 }
 // js/stream.js
-function x(e, t) {
+function h(e, t) {
 	if (!e._hlsAttached) {
 		if (e._hlsAttached = !0, Hls.isSupported()) {
 			let n = new Hls({ preferManagedMediaSource: !1 });
@@ -162,8 +109,60 @@ function x(e, t) {
 		} else e.canPlayType("application/vnd.apple.mpegurl") ? e.src = t : console.error("HLS not supported in this browser.");
 	}
 }
+// js/transcript.js
+function g(e) {
+	return String(Math.floor(e)).padStart(2, "0");
+}
+function _(e) {
+	return e ? e.type === "string" ? e.value || "" : (e.children || []).map(_).join("") : "";
+}
+function v(e) {
+	return _(e.components).trim();
+}
+function y(e) {
+	let t = Math.floor(e / 3600), n = Math.floor(e % 3600 / 60), r = (e % 60).toFixed(3).padStart(6, "0");
+	return `${g(t)}:${g(n)}:${r}`;
+}
+function b(e) {
+	let t = [], n = null;
+	return e.forEach((e) => {
+		let r = v(e).replace(/\n\s*/g, " ").trim();
+		if (!r) return;
+		let i = r.match(/^(\p{L}+ \d+):\s*/u);
+		i ? (n = {
+			speaker: i[1],
+			time: e.start,
+			text: r.slice(i[0].length)
+		}, t.push(n)) : n ? n.text += (n.text ? " " : "") + r : (n = {
+			speaker: null,
+			time: e.start,
+			text: r
+		}, t.push(n));
+	}), t.filter((e) => e.text).map((e) => (e.speaker ? `${e.speaker} ` : "") + y(e.time) + "\n" + e.text).join("\n\n") + "\n";
+}
+function x(e) {
+	let t = new Blob([b(e)], { type: "text/plain;charset=utf-8" });
+	window.open(URL.createObjectURL(t), "_blank");
+}
+var S = "http://www.w3.org/2000/svg";
+function C(e) {
+	let t = e.$transcriptToolbar?.[0];
+	if (!t) return;
+	let n = document.createElement("button");
+	n.type = "button", n.className = "able-transcript-newtab", n.textContent = "View in new tab";
+	let r = document.createElementNS(S, "svg");
+	r.setAttribute("viewBox", "0 0 24 24"), r.setAttribute("aria-hidden", "true"), r.setAttribute("focusable", "false");
+	let i = document.createElementNS(S, "path");
+	i.setAttribute("d", "M14 3h7v7h-2V6.41l-9.29 9.3-1.42-1.42L17.59 5H14V3zM5 5h6v2H5v12h12v-6h2v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2z"), r.appendChild(i), n.appendChild(r), n.addEventListener("click", (t) => {
+		t.stopPropagation();
+		let n = e.transcriptCaptions?.cues || e.captions?.[0]?.cues;
+		n?.length && x(n);
+	});
+	let a = t.querySelector(".autoscroll-transcript");
+	t.insertBefore(n, a);
+}
 // js/dlts-player.js
-function S(e, t) {
+function w(e, t) {
 	if (!t) return;
 	e.poster = t.poster || "";
 	let n = t.captions || [], r = [...e.querySelectorAll("track")];
@@ -173,27 +172,27 @@ function S(e, t) {
 		n || (n = document.createElement("track"), n.kind = t.kind || "captions", n.srclang = t.srclang, e.appendChild(n), r.push(n)), n.src = t.src, n.label = t.label || t.srclang, t.kind && (n.kind = t.kind);
 	}
 }
-function C(e) {
+function T(e) {
 	let t = window.AblePlayerInstances || [];
 	return t.find((t) => t.media === e) || t[0];
 }
-function w(e) {
+function E(e) {
 	return new Promise((t) => {
 		let n = () => {
-			let r = C(e);
+			let r = T(e);
 			r && r.playerCreated ? t(r) : requestAnimationFrame(n);
 		};
 		n();
 	});
 }
-async function T({ video: e, playlist: t = [], index: n = 0, onNavigate: r } = {}) {
+async function D({ video: e, playlist: t = [], index: n = 0, onNavigate: r } = {}) {
 	if (!e) throw Error("mountDltsPlayer: video is required");
 	let i = t[n];
-	if (S(e, i), !C(e) && window.AblePlayer && !e.hasAttribute("data-able-player")) {
+	if (w(e, i), !T(e) && window.AblePlayer && !e.hasAttribute("data-able-player")) {
 		let t = window.jQuery ? window.jQuery(e) : e, n = new AblePlayer(t);
 		(window.AblePlayerInstances ||= []).push(n);
 	}
-	let a = await w(e), o = {
+	let a = await E(e), o = {
 		video: e,
 		playlist: t,
 		index: n,
@@ -203,8 +202,8 @@ async function T({ video: e, playlist: t = [], index: n = 0, onNavigate: r } = {
 		}),
 		player: a
 	};
-	return g(o), _(o), e.addEventListener("timeupdate", () => {
-		y(e.currentTime, e.duration);
-	}), b(e, a), i?.hlsSrc && x(e, i.hlsSrc), a;
+	return u(o), C(a), d(o), e.addEventListener("timeupdate", () => {
+		p(e.currentTime, e.duration);
+	}), m(e, a), i?.hlsSrc && h(e, i.hlsSrc), a;
 }
-export { S as applyMedia, T as mountDltsPlayer };
+export { w as applyMedia, D as mountDltsPlayer };

@@ -8,9 +8,7 @@
   </head>
   <body>
     <div id="player-section">
-      <video id="video1" preload="metadata">
-        <track kind="captions" srclang="en" label="English" src="" />
-      </video>
+      <video id="video1" preload="metadata"></video>
     </div>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/hls.js@1.6.15/dist/hls.min.js"></script>
@@ -26,6 +24,11 @@
             title: "Sintel",
             hlsSrc: "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
             poster: "",
+            captions: [
+              { srclang: "es", label: "Spanish", src: "../esther_horne_reel1_es.vtt" },
+              // Same file under a second language so the Language select renders.
+              { srclang: "en", label: "English", src: "../esther_horne_reel1_es.vtt" },
+            ],
           },
         ],
         index: 0,

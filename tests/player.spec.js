@@ -21,7 +21,6 @@ test("demo player meets WCAG 2 A/AA", async ({ page }) => {
 test("bundled player plays HLS video", async ({ page }) => {
   await page.goto("/tests/harness.html");
   await page.locator(".able-controller").waitFor();
-  await expect(page.locator(".able-button-handler-view-transcript")).toBeVisible();
 
   await page.locator(".able-button-handler-play").click();
 
@@ -30,4 +29,53 @@ test("bundled player plays HLS video", async ({ page }) => {
       timeout: 20_000,
     })
     .toBe(true);
+});
+
+test("transcript window has a View in new tab link that opens plain text", async ({ page }) => {
+  await page.goto("/tests/harness.html");
+  await page.locator(".able-button-handler-transcript").click();
+
+  const toolbar = page.locator(".able-transcript-area .able-window-toolbar");
+  const link = toolbar.getByRole("button", { name: "View in new tab" });
+  await expect(link).toBeVisible();
+  await expect(link).toHaveText("View in new tab");
+  await expect(toolbar.locator(".able-transcript-newtab + .autoscroll-transcript")).toHaveCount(1);
+  await expect(page.locator(".able-button-handler-view-transcript")).toHaveCount(0);
+
+  const [popup] = await Promise.all([page.waitForEvent("popup"), link.click()]);
+  await expect(popup.locator("body")).toContainText("¿puede decirme");
+  await expect(popup.locator("body")).toContainText("Hablante 1 00:01:30.340");
+});
+
+test("transcript toolbar controls fit on one row without crowding", async ({ page }) => {
+  await page.setViewportSize({ width: 1400, height: 900 });
+  await page.goto("/tests/harness.html");
+  await page.locator(".able-button-handler-transcript").click();
+  const toolbar = page.locator(".able-transcript-area .able-window-toolbar");
+  await toolbar.waitFor();
+
+  const layout = await toolbar.evaluate((el) => {
+    const items = [...el.children].filter(
+      (c) => c.offsetParent && getComputedStyle(c).position !== "absolute",
+    );
+    const centers = items.map((c) => {
+      const r = c.getBoundingClientRect();
+      return r.top + r.height / 2;
+    });
+    const handle = el.querySelector(".able-drag-handle");
+    return {
+      oneRow: Math.max(...centers) - Math.min(...centers) < 4,
+      hasLanguage: !!el.querySelector("select"),
+      overflow: el.scrollWidth > el.clientWidth,
+      handleWidth: handle ? handle.getBoundingClientRect().width : 0,
+      handleGap:
+        handle.querySelector("svg").getBoundingClientRect().left -
+        el.querySelector(".able-button-handler-preferences").getBoundingClientRect().right,
+    };
+  });
+  expect(layout.hasLanguage).toBe(true);
+  expect(layout.oneRow).toBe(true);
+  expect(layout.overflow).toBe(false);
+  expect(layout.handleWidth).toBeGreaterThanOrEqual(80);
+  expect(layout.handleGap).toBeLessThanOrEqual(20);
 });

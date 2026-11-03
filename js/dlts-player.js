@@ -2,6 +2,7 @@ import { addControlButtons } from "./controls.js";
 import { buildPlaylistOverlay, syncOverlay } from "./overlay.js";
 import { initBuffering } from "./buffering.js";
 import { attachHls } from "./stream.js";
+import { addTranscriptLink } from "./transcript.js";
 
 // Must run before Able Player inits. It reads poster and <track> srcs
 // off the <video> at construct time. If we set them later, Safari can
@@ -90,6 +91,7 @@ export async function mountDltsPlayer({
 
   const ctx = { video, playlist, index, onNavigate: navigate, player };
   addControlButtons(ctx);
+  addTranscriptLink(player);
   buildPlaylistOverlay(ctx);
   video.addEventListener("timeupdate", () => {
     syncOverlay(video.currentTime, video.duration);

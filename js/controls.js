@@ -1,4 +1,3 @@
-import { openTranscriptTab } from "./transcript.js";
 import { showTooltip, hideTooltip } from "./tooltip.js";
 
 const svgNS = "http://www.w3.org/2000/svg";
@@ -42,7 +41,7 @@ function makePipe() {
   return p;
 }
 
-export function addControlButtons({ playlist, index, onNavigate, player }) {
+export function addControlButtons({ playlist, index, onNavigate }) {
   const target =
     document.querySelector(".able-right-controls") ||
     document.querySelector(".able-controller");
@@ -65,71 +64,4 @@ export function addControlButtons({ playlist, index, onNavigate, player }) {
     }
     target.appendChild(btn);
   }
-
-  const captionTracks = (player.captions || []).filter(
-    (t) => t.cues && t.cues.length,
-  );
-
-  const transcriptMenu = document.createElement("ul");
-  transcriptMenu.className = "able-popup able-popup-transcript";
-  transcriptMenu.setAttribute("role", "menu");
-  transcriptMenu.style.display = "none";
-
-  const heading = document.createElement("li");
-  heading.setAttribute("role", "presentation");
-  heading.className = "able-popup-transcript-heading";
-  heading.textContent = "Languages";
-  transcriptMenu.appendChild(heading);
-
-  captionTracks.forEach((track) => {
-    const li = document.createElement("li");
-    li.setAttribute("role", "menuitem");
-    li.setAttribute("tabindex", "-1");
-    li.textContent = track.label || track.language || "Transcript";
-    li.addEventListener("click", (e) => {
-      e.stopPropagation();
-      transcriptMenu.style.display = "none";
-      transcriptBtn.setAttribute("aria-expanded", "false");
-      openTranscriptTab(track.cues);
-    });
-    li.addEventListener("keydown", (e) => {
-      if (e.key === "Enter" || e.key === " ") {
-        e.preventDefault();
-        li.click();
-      }
-    });
-    transcriptMenu.appendChild(li);
-  });
-
-  const transcriptBtn = makeControlBtn(
-    "view-transcript",
-    "View transcript as plain text",
-    "0 0 20 20",
-    "M0 19.107v-17.857q0-0.446 0.313-0.759t0.759-0.313h8.929v6.071q0 0.446 0.313 0.759t0.759 0.313h6.071v11.786q0 0.446-0.313 0.759t-0.759 0.312h-15q-0.446 0-0.759-0.313t-0.313-0.759zM4.286 15.536q0 0.156 0.1 0.257t0.257 0.1h7.857q0.156 0 0.257-0.1t0.1-0.257v-0.714q0-0.156-0.1-0.257t-0.257-0.1h-7.857q-0.156 0-0.257 0.1t-0.1 0.257v0.714zM4.286 12.679q0 0.156 0.1 0.257t0.257 0.1h7.857q0.156 0 0.257-0.1t0.1-0.257v-0.714q0-0.156-0.1-0.257t-0.257-0.1h-7.857q-0.156 0-0.257 0.1t-0.1 0.257v0.714zM4.286 9.821q0 0.156 0.1 0.257t0.257 0.1h7.857q0.156 0 0.257-0.1t0.1-0.257v-0.714q0-0.156-0.1-0.257t-0.257-0.1h-7.857q-0.156 0-0.257 0.1t-0.1 0.257v0.714zM11.429 5.893v-5.268q0.246 0.156 0.402 0.313l4.554 4.554q0.156 0.156 0.313 0.402h-5.268z",
-    () => {
-      const isOpen = transcriptMenu.style.display !== "none";
-      transcriptMenu.style.display = isOpen ? "none" : "";
-      transcriptBtn.setAttribute(
-        "aria-expanded",
-        isOpen ? "false" : "true",
-      );
-      if (!isOpen && transcriptMenu.firstChild) {
-        transcriptMenu.firstChild.focus();
-      }
-    },
-  );
-  transcriptBtn.setAttribute("aria-haspopup", "menu");
-  transcriptBtn.setAttribute("aria-expanded", "false");
-  transcriptBtn.style.position = "relative";
-  transcriptBtn.appendChild(transcriptMenu);
-
-  target.appendChild(makePipe());
-  target.appendChild(transcriptBtn);
-
-  document.addEventListener("click", (e) => {
-    if (!transcriptBtn.contains(e.target)) {
-      transcriptMenu.style.display = "none";
-      transcriptBtn.setAttribute("aria-expanded", "false");
-    }
-  });
 }
