@@ -16,16 +16,18 @@ test("demo player meets WCAG 2 A/AA", async ({ page }) => {
   expect(results.violations).toEqual([]);
 });
 
-// TODO: more tests that work with CORS enabled - video plays, captions work, HLS works, elements appear  
-// test("video plays", async ({ page }) => {
-//   await page.goto("/tests/harness.html");
-//   await page.locator(".able-controller").waitFor();
+// Loads the shipped bundle (dist/) via tests/harness.html, with a public
+// CORS-enabled stream, so CI checks the exact file other projects import.
+test("bundled player plays HLS video", async ({ page }) => {
+  await page.goto("/tests/harness.html");
+  await page.locator(".able-controller").waitFor();
+  await expect(page.locator(".able-button-handler-view-transcript")).toBeVisible();
 
-//   await page.locator(".able-button-handler-play").click();
+  await page.locator(".able-button-handler-play").click();
 
-//   await expect
-//     .poll(async () =>
-//       page.locator("video").evaluate((v) => v.currentTime > 0 && !v.paused),
-//     )
-//     .toBe(true);
-// });
+  await expect
+    .poll(() => page.locator("video").evaluate((v) => v.currentTime > 0 && !v.paused), {
+      timeout: 20_000,
+    })
+    .toBe(true);
+});
