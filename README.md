@@ -3,7 +3,7 @@
 Accessible HTML5 video player for NYU Digital Library Technology Services, built on [Able Player](https://ableplayer.github.io/ableplayer/).
 
 - Source lives in `js/` as split modules.
-- `pnpm build` uses esbuild to bundle them into `dist/dlts-able-player.js` for other projects.
+- `pnpm build` uses Vite (library mode) to bundle them into `dist/dlts-able-player.js` for other projects.
 - The demo loads the modules directly — you do not need the bundle to run locally.
 - `mountDltsPlayer` is the public API: importing the script only loads the library; you still pass your own `<video>` and playlist.
 
@@ -17,13 +17,13 @@ Accessible HTML5 video player for NYU Digital Library Technology Services, built
 
 ## Run locally
 
-Do not open `index.html` as a file. The player uses ES modules, so it needs an HTTP server.
+Do not open `index.html` as a file. The player uses ES modules, so it needs an HTTP server. `pnpm start` runs the Vite dev server (live reload, no browser caching).
 
 ```bash
 pnpm start
 ```
 
-Then open [http://127.0.0.1:8080](http://127.0.0.1:8080) (http, not https).
+Then open [http://localhost:8080](http://localhost:8080) (http, not https).
 
 ## Build
 
